@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block title %}Мои активности{% endblock %}
+
+{% block main %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/main/myActivities.css' %}">
+
+<div class="mobile-layout">
+   
+    
+    <div class="sidebar" onclick="toggleMenu()">
+
+        <!-- Иконка меню -->
+         <div class="menu-icon">
+             <img src="{% static 'images/menu_icon.png' %}" width="35px" height="25px" style="margin-top: 0px; margin-left: -5px">
+         </div>  
+ 
+             <!-- Меню скрытое -->
+             <div class="menu" id="menu">
+                 <div class="counteiner-fluid">
+                 <div class="menu-item col-3">
+                     <span><a class="url" href="{% url 'main' %}">Личный кабинет </a></span>
+                 </div>
+                 <div class="menu-item col-4">
+                     <span><a class="url" href="{% url 'achievements' %}">Достижения</a></span>
+                 </div>
+                 <div class="menu-item col-4">
+                     <span><a class="url" href="{% url 'myActivities' %}">Активности</a></span>
+                 </div>
+                 
+                 </div>
+             </div>
+     </div>
+     
+     {% for obj in userProfile %}
+    <div style="justify-content: right; width: 360px; margin-top: -50px; text-align: end; font-size: 22px;"><div><b>{{ obj.score }}</b></div><img style="width: 25px; height: 20px; margin-top: -70px; margin-right: 40px;" src="{% static 'images/money.png' %}" ></div>
+    {% endfor %}
+
+    <div class="achievements-container ">
+        <div class="malabel " >
+            <span style="font-weight: bold">История активности</span>
+            
+        </div>
+        <div class="menuach">
+        <div class="category" onclick="toggleCategory(this)">
+            <div class="category-text" >Все</div>
+        </div>
+        <div class="category" onclick="toggleCategory(this)">
+            <div class="category-text" >Сутки</div>
+            </div>
+        <div class="category" onclick="toggleCategory(this)">
+            <div class="category-text" >Неделя</div>
+        </div>
+        <div class="category" onclick="toggleCategory(this)">
+            <div class="category-text" >Месяц</div>
+        </div>
+        </div>
+    {% for obj in listInputData %}
+        <div class="achievements">
+            
+            <div class="aglabel gumma">{{obj.event.name}}
+            </div>
+            <div class="anegllabel">{{obj.cheque}}₽</div>
+            <div class="rou"></div>
+            <div class="dmoney">+{% widthratio obj.cheque 100 1 %}</div>
+            <img class="dicon" style="width: 25px; height: 20px;" src="{% static 'images/money.png' %}" >
+            <div class="time">{{obj.date}}</div>
+        </div>
+        {% endfor %}
+       
+    </div>
+</div>
+<!-- не работает(( -->
+<script>
+    function updateColor() {
+      const element = document.querySelectorAll('bu');
+      var value = parseFloat(element.textContent);
+      if (value > 0) {
+        value.style.color = "green";
+      } else if (value < 0) {
+        value.style.color = "red";
+      }
+    }
+    function toggleCategory(element) {
+        const categories = document.querySelectorAll('.category');
+        categories.forEach(cat => {
+            cat.style.backgroundColor = '#fff';
+            cat.querySelector('.category-text').style.color = '#000';
+        });
+        element.style.backgroundColor = '#484AA1'; // выбранный цвет
+        element.querySelector('.category-text').style.color = '#fff'; // белый цвет текста
+    }
+        function toggleMenu() {
+        const menu = document.getElementById("menu");
+        menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+    function toggleMenu() {
+    const menu = document.getElementById("menu");
+    menu.classList.toggle('show');
+    }
+    function fGummaFontSize() {
+  /* Увеличиваем размер шрифта, до появления прокрутки */
+  while (this.scrollHeight <= this.clientHeight || this.scrollWidth <= this.clientWidth) {
+    this.style.fontSize = parseFloat(getComputedStyle(this).fontSize) + 2 + "px";
+  }
+  /* Уменьшаем размер шрифта, пока прокрутка не исчезнет */
+  while ( this.scrollHeight > this.clientHeight || this.scrollWidth > this.clientWidth ) {
+    this.style.fontSize = parseFloat(getComputedStyle(this).fontSize) - 1 + "px";
+  }
+}
+/* Функция обхода всех элементов с нужным классом */
+function fGummaResizeAll() {
+  document.querySelectorAll(".gumma").forEach(el => fGummaFontSize.call(el));
+}
+document.querySelectorAll(".gumma").forEach(el => el.addEventListener("input", fGummaFontSize));
+window.onload = fGummaResizeAll; // Запуск после загрузки контента
+window.onresize = fGummaResizeAll; // Запуск при изменении размеров окна и контейнеров
+    </script>
+    <script src="{% static 'js/main/main.js' %}"></script>
+{% endblock %}

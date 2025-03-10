@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Добавление достижения{% endblock %}
+
+{% block main %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/main/main.css' %}">
+
+<form method="post">
+    {% csrf_token %}
+    {% if form.errors %}
+        {{ form.errors }}
+    {% endif %}
+    {{ form }}
+    <button class="btn" type="submit" style="height: 40px; width: 100px; margin-top: 10px; border: 2px solid;">Добавить</button>
+</form>
+
+{% for obj in list %}
+    <div style="background-color: rgb(146, 84, 146); margin: 10px; width: 300px; height: auto;">
+        <div><img src="/media/{{ obj.icon }}" style="width: 50px; height: 50px;"></div>
+        <b>{{ obj.name }}</b>
+        <div>Условие: {{ obj.text }}</div>
+        <div>Категория: {{ obj.category }}</div>
+        <div>Выдаваемый опыт{{ obj.scores }}</div>
+        <div>Цель: {{ obj.limit }}</div>
+        <div>Активность: {{ obj.event }}</div>
+        <div>Кол-во людей: {{ obj.requiredQuantity }}</div>
+    </div>
+{% endfor %}
+
+{% endblock %}

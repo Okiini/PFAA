@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+
+{% block title %}Главная{% endblock %}
+
+{% block main %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/main/main.css' %}">
+
+{% if user.is_authenticated  %}
+
+<div class="mobile-layout">
+
+    <div class="sidebar" onclick="toggleMenu()">
+
+        <!-- Иконка меню -->
+    <div class="menu-icon">
+        <img src="{% static 'images/menu_icon.png' %}" width="35px" height="25px" style="margin-top: 0px; margin-left: -5px">
+    </div>  
+
+        <!-- Меню скрытое -->
+        <div class="menu" id="menu">
+            <div class="counteiner-fluid">
+            <div class="menu-item col-3">
+                <span><a class="url" href="{% url 'main' %}">Личный кабинет </a></span>
+            </div>
+            <div class="menu-item col-4">
+                <span><a class="url" href="{% url 'achievements' %}">Достижения</a></span>
+            </div>
+            <div class="menu-item col-4">
+                <span><a class="url" href="{% url 'myActivities' %}">Активности</a></span>
+            </div>
+            
+            </div>
+        </div>
+    </div>
+    
+    {% for obj in userProfile %}
+    
+    <div style="justify-content: right; width: 360px; text-align: end; margin-top: -50px; font-size: 22px;"><div><b>{{ obj.score }}</b></div><img style="width: 25px; height: 20px; margin-top: -70px; margin-right: 40px;" src="{% static 'images/money.png' %}" ></div>
+        <!-- Контейнер для иконки уровня и прогресса -->
+        <div class="level-container">
+            <!-- Квадратик уровня -->
+            <div class="level-icon">
+                <img src="/media/{{ obj.level.img }}" style="width: 130px; height: 130px; margin-top: -50px; margin-left: -32px;">
+            </div>
+
+            
+            <!-- Подпись уровня -->
+            <div class="level-name">
+                <b>{{ obj.level }}</b>
+            </div>
+        
+
+        <!-- Линия прогресса -->
+
+        <style>
+            #greyProgress {
+            width: 70%;
+            background-color: #ddd;
+            border-radius: 10px;
+            display: flex;
+            justify-content: left;
+            }
+
+            #greenBar {
+            width: 0%;
+            height: 15px;
+            background-color: #484AA1;
+            border-radius: 10px;
+            }
+        </style>
+        <div style="visibility: hidden;" id="{{ percentLVL }}" class="a"></div>
+        
+        <div id="greyProgress">
+            <div id="greenBar"></div>
+        </div>
+
+<!-- Опыт -->
+<div class="experience">
+    {{ obj.experience }} / 
+    {% for el in levels %} 
+        {% if obj.level|striptags == el.name %}
+        {{ el.maxExperience }}
+        {% endif %}
+    {% endfor %}
+</div>
+</div>
+
+<!-- Информация о пользователе -->
+<div class="user-info">
+    <div class="sub-info">
+        <span class="user-object"><b>{{ obj.theard_name }}</b></span> 
+        <span class="user-label">Фамилия</span>
+    </div>
+    <div class="sub-info">
+        <span class="user-object"><b>{{ obj.name }}</b></span> 
+        <span class="user-label">Имя</span>
+    </div>  
+    <div class="sub-info"> 
+        <span class="user-object"><b>{{ obj.email }}</b></span>
+        <span class="user-label">Почта</span>
+    </div> 
+</div>
+
+<div class="achievements-container">
+    <span class="process"><b>В процессе достижения</b></span>
+    
+    <div class="achievement-row">
+        {% for el in achievementList %}
+        <div class="achievement-box">
+            <div class="achievement-content">
+                <div class="achievement-icon ">
+                    <img src="/media/{{ el.achievement.icon }}"  width="auto" height="120%" style="margin-left: -40px; border-radius: 3vw; margin-top: -10px;">
+                </div>
+                
+                <!-- Сколько монет -->
+                <div class="coins"><img style="width: 15px; height: 15px; margin-top: -3px; margin-right: 3px;" src="{% static 'images/money.png' %}" >{{ el.achievement.addScore }}</div>
+                
+                <!-- Линия прогресса -->
+                <div class="progress-bar-ach">
+                    <div class="progress-ach"></div>
+                </div>
+                
+                <!-- Название достижения -->
+                <div class="achievement-label"><b>{{ el.achievement.name }}</b></div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+  
+        
+    
+
+{% endfor %}
+</div>
+
+{% else %}
+
+<div class="container mt-5">
+    <div class="row d-flex justify-content-center">
+       <div class="col-12 col-lg-3">
+           <h5 class="text-h1">Вход</h5>
+           <form class="mt-3" name="login_form" id="login_form" method="post" action="{% url 'login' %}">
+               {% csrf_token %}
+               <div class="mb-3">
+                   <label for="exampleInputEmail1" class="text-h2">Логин</label>
+                   <input name ="username" type="username" class="form-control">
+               </div>
+               <div class="mb-3">
+                   <label for="exampleInputPassword1" class="text-h2">Пароль</label>
+                   <input name="password" type="password" class="form-control">
+               </div>
+               {% if error %}
+                    <h6 class="text-danger">{{ error }}</h6>
+               {% endif %}
+               <button type="submit" class="btn btn-dark mt-1" value="login">Войти</button>
+               <input type="hidden" name="next" value="{{ next }}"/>
+           </form>
+       </div>
+    </div>
+</div>
+
+{% endif %}
+
+<script>
+    function toggleMenu() {
+        const menu = document.getElementById("menu");
+        menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+    function toggleMenu() {
+    const menu = document.getElementById("menu");
+    menu.classList.toggle('show');
+    }
+</script>
+<script src="{% static 'js/main/main.js' %}"></script>
+
+{% endblock %}

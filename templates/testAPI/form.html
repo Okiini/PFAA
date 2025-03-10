@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Тест{% endblock %}
+
+{% block main %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/main/main.css' %}">
+
+<form method="post">
+    {% csrf_token %}
+    {% if form.errors %}
+        {{ form.errors }}
+    {% endif %}
+    {{ form }}
+
+
+    <button class="btn" type="submit" style="height: 40px; width: 100px; margin-top: 10px; border: 2px solid;">Отправить</button>
+</form>
+
+{% endblock %}
